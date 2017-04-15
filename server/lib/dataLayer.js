@@ -9,7 +9,7 @@ rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
 
 var table = function(){
   return rt.db(cfg.db.database).table(cfg.db.table);
-}
+};
 
 var createCustomer = (customer, cb) => {
   table().insert(customer).run(conn, (err, result) => {
@@ -20,7 +20,7 @@ var createCustomer = (customer, cb) => {
       cb();
     }
   });
-}
+};
 
 var updateCustomer = (customer, cb) => {
   table().get(customer.id).update(customer).run(conn, (err, result) => {
@@ -34,8 +34,8 @@ var updateCustomer = (customer, cb) => {
         cb();
       }
     }
-  })
-}
+  });
+};
 
 var deleteCustomer = (id, cb) => {
   table().get(id).delete().run(conn, (err, result) => {
@@ -50,7 +50,7 @@ var deleteCustomer = (id, cb) => {
       }
     }
   });
-}
+};
 
 var customerContacted = (id, cb) => {
   table().get(id).update({lastContacted: new Date()}).run(conn, (err, result) => {
@@ -64,8 +64,8 @@ var customerContacted = (id, cb) => {
         cb();
       }
     }
-  })
-}
+  });
+};
 
 var getCustomer = (id, cb) => {
   table().get(id).run(conn, (err, result) => {
@@ -80,7 +80,7 @@ var getCustomer = (id, cb) => {
       }
     }
   });
-}
+};
 
 var getAllCustomers = (cb) => {
   table().run(conn, (err, cursor) => {
@@ -109,7 +109,7 @@ var getAllCustomers = (cb) => {
       });
     }
   });
-}
+};
 
 var fun = {
   createCustomer: createCustomer,
@@ -118,6 +118,6 @@ var fun = {
   getAllCustomers: getAllCustomers,
   deleteCustomer: deleteCustomer,
   customerContacted: customerContacted
-}
+};
 
 module.exports = fun;

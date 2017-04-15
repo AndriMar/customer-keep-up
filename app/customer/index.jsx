@@ -70,7 +70,7 @@ export default class List extends React.Component {
         <Col xs={6} md={1}><div className={style.imgContainer}><img onClick={this.contacted.bind(this,cust)} className={style.contactedImg} src={contact}></img></div></Col>
         <Col xs={6} md={3}>{cust.company}</Col>
         <Col xs={6} md={3}>{cust.contact}</Col>
-        <Col xs={6} md={3}>{cust.lastContacted}</Col>
+        <Col xs={6} md={3}>{this.formatDate(cust.lastContacted)}</Col>
         <Col xs={6} md={1}>{cust.days}</Col>
         <Col xs={6} md={1}><div className={style.imgContainer}><img onClick={this.editContact.bind(this,cust)} className={style.editImg} src={editImage}></img></div></Col>
       </Row>

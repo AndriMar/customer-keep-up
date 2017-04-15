@@ -7,8 +7,7 @@ const APP_DIR = path.resolve(__dirname, 'app');
 
 const config = {
   entry: {
-    'loggedin': './app/loggedin/index.jsx',
-    'loggedout': './app/loggedout/index.jsx',
+    'app': './app/index.jsx',
   },
   output: {
     path: BUILD_DIR,
@@ -29,6 +28,9 @@ const config = {
      {
       test: /\.css$/,
       loader: 'style!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+    },
+    { test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
+      loader: "file"
     }
    ]
  },

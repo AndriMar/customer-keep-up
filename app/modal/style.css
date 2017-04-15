@@ -1,0 +1,31 @@
+.inputContainer {
+  padding-bottom: 10px;
+}
+.lableStyle {
+  display: inline-block;
+  width: 70px;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+.inputStyle {
+  width: 100%;
+}
+.buttonStyle {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.buttonStyle:hover {
+  cursor: pointer;
+}
+.buttonCancel {
+  background-color: #f44336;
+  float: right;
+}
+.buttonSave {
+  background-color: #4CAF50;
+}

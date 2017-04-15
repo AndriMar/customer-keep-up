@@ -1,0 +1,32 @@
+.container {
+  border: 1px solid lightgray;
+  padding: 10px;
+}
+.listItem{
+  height: 30px;
+  display: inline-block;
+}
+.company{
+ width: 30%;
+}
+.contact{
+ width: 30%;
+}
+.last{
+  width:20%;
+}
+.days{
+  width: 10%;
+}
+.edit{
+  width: 10%;
+  position: relative;
+}
+.editImg {
+  width: 30px;
+  position: absolute;
+  top:8px;
+}
+.editImg:hover{
+  cursor: pointer;
+}

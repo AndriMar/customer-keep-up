@@ -11,6 +11,16 @@ var table = function(){
   return rt.db(cfg.db.database).table(cfg.db.table);
 };
 
+var calculateDays = (data) => {
+  return data.map((item) => {
+    if(item.lastContacted){
+      item.days = Math.round(Math.abs((new Date().getTime() - new Date(item.lastContacted).getTime())/(24*60*60*1000)));
+    }
+
+    return item;
+  });
+}
+
 var createCustomer = (customer, cb) => {
   table().insert(customer).run(conn, (err, result) => {
     if(err){
@@ -104,6 +114,7 @@ var getAllCustomers = (cb) => {
               return 1;
             }
           });
+          result = calculateDays(result);
           cb(null, result);
         }
       });

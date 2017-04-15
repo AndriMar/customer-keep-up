@@ -1,11 +1,10 @@
 var restify = require("restify");
 var path = require("path");
-var socket = require("socket.io");
 var customer = require("./customer.js");
 
+const PORT = 1337;
 
 var server = restify.createServer();
-const PORT = 1337;
 
 server.use(restify.bodyParser());
 server.use(restify.queryParser());

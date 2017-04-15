@@ -92,4 +92,5 @@ module.exports = (server) => {
   server.del("/customer/:id", deleteCustomer);
   server.post("/customer", createCustomer);
   server.put("/customer/contact/:id", customerContacted);
+  require("./lib/dataEventListener.js")(server, dl);
 }

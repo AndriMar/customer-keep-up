@@ -1,9 +1,13 @@
-const createApp = require('./app');
+var restify = require("restify");
+var server = restify.createServer();
+var customer = require("./customer.js");
+const PORT = 1337;
 
-const PORT = +(process.env.PORT || '4000');
-const app = createApp();
+server.use(restify.bodyParser());
+server.use(restify.queryParser());
 
-app.listen(PORT, () => {
-  console.log(`Server starting on port: ${PORT}`);
-  console.log(`Server running in mode: ${process.env.NODE_ENV}`);
+customer(server);
+
+server.listen(PORT, function(){
+  console.log(`listening to port ${PORT}`);
 });

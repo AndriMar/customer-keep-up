@@ -20,7 +20,6 @@ var getAllCustomers = (req, res) => {
     if(err){
       res.send(err.code, err.obj);
     } else {
-      console.log(data);
       res.send(200, data);
     }
   })

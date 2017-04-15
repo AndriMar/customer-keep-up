@@ -14,7 +14,7 @@ var table = function(){
 var calculateDays = (data) => {
   return data.map((item) => {
     if(item.lastContacted){
-      item.days = Math.round(Math.abs((new Date().getTime() - new Date(item.lastContacted).getTime())/(24*60*60*1000)));
+      item.days = Math.floor(new Date()/8.64e7) - Math.floor(new Date(item.lastContacted)/8.64e7);
     }
 
     return item;
@@ -22,6 +22,7 @@ var calculateDays = (data) => {
 }
 
 var createCustomer = (customer, cb) => {
+  customer.contactHistory = [];
   table().insert(customer).run(conn, (err, result) => {
     if(err){
       console.log("ERROR createCustomer: ", err);
@@ -63,7 +64,8 @@ var deleteCustomer = (id, cb) => {
 };
 
 var customerContacted = (id, cb) => {
-  table().get(id).update({lastContacted: new Date()}).run(conn, (err, result) => {
+  var date = new Date();
+  table().get(id).update({lastContacted: date, contactHistory: rt.row("contactHistory").append(date)}).run(conn, (err, result) => {
     if(err){
       console.log("ERROR customerContacted: ", err);
       cb({code: 500, obj: {error: "DATABASE_ERROR"}});

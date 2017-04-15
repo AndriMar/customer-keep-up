@@ -17,13 +17,16 @@ rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
       console.log("ERROR changes: ", err);
     } else {
       cursor.each((err, data) => {
-        dl.getAllCustomers((err, data) => {
-          if(err){
-            console.log("ERROR emit: ", err);
-          } else {
-            io.emit("customerList", data);
-          }
-        });
+        console.log('Getting all customers')
+        setTimeout(function () {
+          dl.getAllCustomers((err, data) => {
+            if(err){
+              console.log("ERROR emit: ", err);
+            } else {
+              io.emit("customerList", data);
+            }
+          });
+        }, 100);
       });
     }
   });

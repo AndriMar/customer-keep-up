@@ -4,6 +4,9 @@ import Customer from '../customer';
 import Modal from '../modal';
 import $ from 'jquery'
 import { Grid, Row, Col } from 'react-flexbox-grid';
+var io = require("socket.io-client")("/");
+
+
 
 
 // import axios from 'axios';
@@ -25,22 +28,20 @@ export default class List extends React.Component {
       url: '/customer',
       type: 'GET',
       success: function(customers) {
-        console.log(customers)
-        this.setState({customers})
+        this.setState({customers});
       }.bind(this),
       error: function(xhr, status, err) {
         this.setState({error:'Error adding or changing customer'})
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-    // socket.emit('user:join',{username:this.state.username});
-		// socket.on('in:message', this.addNewMessage.bind(this));
-		// socket.on('user:join', this.newUser.bind(this));
-		// socket.on('user:left', this.userLeft.bind(this));
-    // this.scrollDown();
+    io.on('customerList', (customers) => {
+      this.setState({customers:[]},function () {
+        this.setState({customers})
+      });
+    });
   }
   editContact(contact) {
-    console.log('Contact:',contact);
     this.refs.modal.openModal(contact)
   }
 

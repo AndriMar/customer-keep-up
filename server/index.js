@@ -13,9 +13,9 @@ customer(server);
 
 server.get("/\/.*/", restify.serveStatic({
   directory: path.join(__dirname, "..", "dist"),
-  default: "index.html" 
+  default: "index.html"
 }));
 
-server.listen(PORT, function(){
+server.listen(PORT,"0.0.0.0", function(){
   console.log(`listening to port ${PORT}`);
 });

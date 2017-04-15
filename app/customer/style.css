@@ -9,7 +9,7 @@
   width: 30px;
   position: absolute;
   left: 0px;
-  top: -6px;
+  top: -4px;
 }
 .contactedImg:hover {
   cursor: pointer;
@@ -17,7 +17,7 @@
 .editImg {
   width: 30px;
   position: absolute;
-  top:-6px;
+  top: -4px;
 }
 .editImg:hover{
   cursor: pointer;
@@ -25,4 +25,13 @@
 .row {
   padding: 10px 0;
   border-bottom: solid 1px lightgray;
+}
+.green {
+  background-color: #27c5ab;
+}
+.yellow {
+  background-color: #ffd750;
+}
+.red {
+  background-color: #f45050;
 }

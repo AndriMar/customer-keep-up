@@ -4,6 +4,7 @@ var editImage = require('../img/edit.png');
 var contact = require('../img/contact.png');
 import $ from 'jquery';
 import { Row, Col } from 'react-flexbox-grid';
+var dateFormat = require('dateformat');
 
 // import axios from 'axios';
 // import Messageline from './messageline'
@@ -39,6 +40,21 @@ export default class List extends React.Component {
   editContact(contact) {
     this.parentEditContact(contact);
   }
+  getClass(days) {
+    if(days == 0){
+      return style.green
+    } else if(days == 1){
+      return style.yellow
+    }
+    return style.red
+  }
+  formatDate(d) {
+    if(d){
+      var theDate = Date(d);
+      return dateFormat(theDate, "dddd, mmmm dS, yyyy");
+    }
+    return "Never";
+  }
   componentDidMount() {
     // socket.emit('user:join',{username:this.state.username});
 		// socket.on('in:message', this.addNewMessage.bind(this));
@@ -50,7 +66,7 @@ export default class List extends React.Component {
   render() {
     const cust = this.state.customer
     return (
-      <Row className={style.row}>
+      <Row className={style.row + ' ' + this.getClass(cust.days)}>
         <Col xs={6} md={1}><div className={style.imgContainer}><img onClick={this.contacted.bind(this,cust)} className={style.contactedImg} src={contact}></img></div></Col>
         <Col xs={6} md={3}>{cust.company}</Col>
         <Col xs={6} md={3}>{cust.contact}</Col>

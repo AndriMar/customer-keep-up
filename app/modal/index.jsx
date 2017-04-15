@@ -1,6 +1,7 @@
 import React, {ProtTypes} from 'react';
 import style from './style.css';
 import Modal from 'react-modal';
+import $ from 'jquery'
 // import axios from 'axios';
 // import Messageline from './messageline'
 //
@@ -37,7 +38,21 @@ export default class List extends React.Component {
     }
     addUpdate(event) {
       event.preventDefault();
-      console.log(this.state.customer)
+      var action = this.state.customer.id?'PUT':'POST';
+      console.log(this.state.customer,action)
+      $.ajax({
+        url: '/customer',
+        type: action,
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(this.state.customer),
+        success: function(data) {
+          this.closeModal();
+        }.bind(this),
+        error: function(xhr, status, err) {
+          this.setState({error:'Error adding or changing customer'})
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
     }
     openModal(customer) {
       this.setState({modalIsOpen: true, customer});
@@ -50,7 +65,7 @@ export default class List extends React.Component {
 
     closeModal() {
       event.preventDefault();
-      this.setState({modalIsOpen: false});
+      this.setState({modalIsOpen: false,error:''});
     }
 
     editCompany(event) {
@@ -109,6 +124,7 @@ export default class List extends React.Component {
               </div>
               <button className={style.buttonStyle + ' '+ style.buttonSave}>Save</button>
               <button className={style.buttonStyle + ' '+ style.buttonCancel} onClick={this.closeModal}>Cancel</button>
+              <div className={style.error}>{this.state.error}</div>
             </form>
           </Modal>
         </div>

@@ -15,7 +15,12 @@ export default class List extends React.Component {
     };
   }
   addContact() {
-    this.refs.modal.openModal({})
+    var contact = {
+      company:'',
+      contact:'',
+      phone:'',
+      address:''}
+    this.refs.modal.openModal(contact)
   }
   componentDidMount() {
     // socket.emit('user:join',{username:this.state.username});

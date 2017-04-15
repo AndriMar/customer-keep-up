@@ -4,21 +4,7 @@
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
-.listItem{
-  display: inline-block;
-}
-.company{
- width: 30%;
-}
-.contact{
- width: 30%;
-}
-.last{
-  width: 20%;
-}
-.days{
-  width: 10%;
-}
-.edit{
-  width: 10%;
+.headder {
+  font-weight: bold;
+  text-decoration: underline;
 }

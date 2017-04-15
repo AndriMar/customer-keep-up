@@ -2,6 +2,10 @@ import React, {ProtTypes} from 'react';
 import style from './style.css';
 import Customer from '../customer';
 import Modal from '../modal';
+import $ from 'jquery'
+import { Grid, Row, Col } from 'react-flexbox-grid';
+
+
 // import axios from 'axios';
 // import Messageline from './messageline'
 //
@@ -12,15 +16,23 @@ export default class List extends React.Component {
     super(props);
     // socket = props.socket
     this.state = {
-      customers: [
-        {id:1,phone:"1212121",company:"sky9",contact:"Sisso",address:"USAUSAUSA",lastContact:"04.08.2016",days:4},
-        {id:2,phone:"343434",company:"sky10",contact:"Snæja",address:"Danmark",lastContact:"04.08.2016",days:3},
-        {id:3,phone:"5656565665",company:"sky11",contact:"Erla",address:"Berjarimi 24",lastContact:"04.08.2016",days:2},
-        {id:4,phone:"7878787",company:"sky12",contact:"Gugga",address:"Kef",lastContact:"04.08.2016",days:1}]
+      customers: []
     };
     this.editContact = this.editContact.bind(this);
   }
   componentDidMount() {
+    $.ajax({
+      url: '/customer',
+      type: 'GET',
+      success: function(customers) {
+        console.log(customers)
+        this.setState({customers})
+      }.bind(this),
+      error: function(xhr, status, err) {
+        this.setState({error:'Error adding or changing customer'})
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
     // socket.emit('user:join',{username:this.state.username});
 		// socket.on('in:message', this.addNewMessage.bind(this));
 		// socket.on('user:join', this.newUser.bind(this));
@@ -35,16 +47,19 @@ export default class List extends React.Component {
   render() {
     return (
       <div className={style.container}>
-        <div>
-            <div className={style.company+' '+style.listItem}>Company</div>
-            <div className={style.contact+' '+style.listItem}>Contact</div>
-            <div className={style.last+' '+style.listItem}>Last contact</div>
-            <div className={style.days+' '+style.listItem}>Days</div>
-            <div className={style.edit+' '+style.listItem}>Edit</div>
-        </div>
+        <Grid fluid>
+          <Row>
+            <Col className={style.headder} xs={1} md={1} lg={1}>Contacted</Col>
+            <Col className={style.headder} xs={3} md={3} lg={3}>Company</Col>
+            <Col className={style.headder} xs={3} md={3} lg={3}>Contact</Col>
+            <Col className={style.headder} xs={3} md={3} lg={3}>Last contact</Col>
+            <Col className={style.headder} xs={1} md={1} lg={1}>Days</Col>
+            <Col className={style.headder} xs={1} md={1} lg={1}>Edit</Col>
+          </Row>
           {this.state.customers.map(cust =>
             <Customer key={cust.id} editContact={this.editContact} customer={cust}></Customer>
           )}
+        </Grid>
           <Modal ref="modal"></Modal>
       </div>
     );

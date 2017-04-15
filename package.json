@@ -23,6 +23,8 @@
     "react-dom": "15.4.0",
     "react-modal": "^1.7.6",
     "restify": "^4.3.0",
+    "rethinkdb": "^2.3.3",
+    "socket.io": "^1.7.3",
     "webpack": "1.13.3"
   },
   "devDependencies": {

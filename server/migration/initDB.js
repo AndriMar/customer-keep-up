@@ -1,49 +1,43 @@
-var pg = require("pg");
-var cfg = require("../cfg.json");
-var client = new pg.Client(cfg.db);
+const cfg = require("../cfg.json");
+const r = require('rethinkdb');
 
-client.connect((err) => {
-	if(err){
-		console.log(err);
-	} else {
-		client.query(`select * from pg_class where relname='customers';`, (err, res) => {
-			if(err){
-				console.log("SELECT ERR:", err);
-				client.end((err) => {
-					if(err) {console.log("CLOSE ERROR:", err);}
-				})
-			} else {
-				if(res.rows && res.rows.length === 1){
-					console.log("already Exists", res.rows.length);
-					client.end((err) => {
-						if(err) {console.log("CLOSE ERROR:", err);}
-					})
-				} else if(res.rows && res.rows.length === 0){
-					console.log("Table needs to be created");
-					client.query(`CREATE TABLE ${cfg.db.table} (\
-					    id bigserial primary key,\
-					    organizationName text NOT NULL,\
-					    contactName text NOT NULL,\
-					    phone text NOT NULL,\
-					    address text NOT NULL,\
-					    lastContacted timestamp NULL\
-						);`, (err, res) => {
-							if(err) { console.log("ERR CREATE TABLE:", err);}
-							console.log("Create Response: ", res);
-							client.query(`INSERT INTO ${cfg.db.table} (organizationName, contactName, phone, address)\
-								VALUES ('testOrg', 'testCont', 'testPhone', 'address');`, (err, res) => {
-									if(err){console.log("ERR ADD EXAMPLE CUSTOMER: ", err);}
-									console.log("insert response: ", res);
-									client.end((err) => {
-										if(err) {console.log("CLOSE ERROR:", err);}
-									})
-								});
-						});
+function createDB(conn) {
+  return r.dbList().contains(cfg.db.database).run(conn).then((containsDb) => {
+    if(containsDb){
+      console.log('Database exists!');
+      return conn;
+    } else {
+      console.log('Creating db!');
+      return r.dbCreate(cfg.db.database).run(conn).then((conf) => {
+        return conn
+      })
+    }
+  })
+}
+function createTable(conn){
+  return r.db(cfg.db.database).tableList().contains(cfg.db.table).run(conn).then((containsTable) => {
+    if(containsTable){
+      console.log('Table exists!')
+      return conn
+    } else {
+      console.log('Creating Table!');
+      return r.db(cfg.db.database).tableCreate(cfg.db.table, {primaryKey: "id"}).run(conn).then((conf) => {
+        return conn;
+      })
+    }
+  })
+}
 
-
-				}
-			}
-
-		});
-	}
-});
+function createDbConnection() {
+  console.log(`Connecting to database host: ${cfg.db.host}`);
+  return r.connect({ host:cfg.db.host, port: cfg.db.port })
+  .then(createDB)
+  .then(createTable)
+}
+createDbConnection().then((dbconn) => {
+  console.log('done');
+  dbconn.close();
+}).catch((err) => {
+  console.error('Error conncting to db!');
+  console.error(err);
+})

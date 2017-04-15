@@ -1,66 +1,114 @@
-var settings = require("../cfg.json");
+var cfg = require("../cfg.json");
+var rt = require("rethinkdb");
+var conn;
 
-var customers = [];
-var idCounter = 0;
+rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
+  if(err){console.log(err); process.exit(1);}
+  conn = connection;
+});
 
-var findCustomerIndex = (id) => {
-  for(var i = 0; i < customers.length; i++){
-    if(customers[i].id === id){
-      return i;
-    }
-  }
-  return -1;
+var table = function(){
+  return rt.db(cfg.db.database).table(cfg.db.table);
 }
 
-
 var createCustomer = (customer, cb) => {
-  customer.id = idCounter++;
-  customers.push(customer);
-  cb();
+  table().insert(customer).run(conn, (err, result) => {
+    if(err){
+      console.log("ERROR createCustomer: ", err);
+      cb({code: 500, obj: {error: "DATABASE_ERROR"}});
+    } else {
+      cb();
+    }
+  });
 }
 
 var updateCustomer = (customer, cb) => {
-  var index = findCustomerIndex(customer.id);
-  if(index === -1){
-    cb("CUSTOMER_NOT_FOUND");
-  } else {
-    customers.splice(index, 1);
-    customers.push(customer);
-    cb();
-  }
+  table().get(customer.id).update(customer).run(conn, (err, result) => {
+    if(err){
+      console.log("ERROR updateCustomer: ", err);
+      cb({code: 500, obj: {error: "DATABASE_ERROR"}});
+    } else {
+      if(result.skipped === 1){
+        cb({code: 404, obj: {error: "CUSTOMER_NOT_FOUND"}});
+      } else {
+        cb();
+      }
+    }
+  })
 }
 
 var deleteCustomer = (id, cb) => {
-  var index = findCustomerIndex(parseInt(id));
-  if(index === -1){
-    cb("CUSTOMER_NOT_FOUND");
-  } else {
-    customers.splice(index, 1);
-    cb();
-  }
+  table().get(id).delete().run(conn, (err, result) => {
+    if(err){
+      console.log("ERROR deleteCustomer: ", err);
+      cb({code: 500, obj: {error: "DATABASE_ERROR"}});
+    } else {
+      if(result.skipped === 1){
+        cb({code: 404, obj: {error: "CUSTOMER_NOT_FOUND"}});
+      } else {
+        cb();
+      }
+    }
+  });
 }
 
 var customerContacted = (id, cb) => {
-  var index = findCustomerIndex(parseInt(id));
-  if(index === -1){
-    cb("CUSTOMER_NOT_FOUND");
-  } else {
-    customers[index].lastContacted = new Date();
-    cb();
-  }
+  table().get(id).update({lastContacted: new Date()}).run(conn, (err, result) => {
+    if(err){
+      console.log("ERROR customerContacted: ", err);
+      cb({code: 500, obj: {error: "DATABASE_ERROR"}});
+    } else {
+      if(result.skipped === 1){
+        cb({code: 404, obj: {error: "CUSTOMER_NOT_FOUND"}});
+      } else {
+        cb();
+      }
+    }
+  })
 }
 
 var getCustomer = (id, cb) => {
-  var index = findCustomerIndex(parseInt(id));
-  if(index === -1){
-    cb("CUSTOMER_NOT_FOUND");
-  } else {
-    cb(null, customers[index]);
-  }
+  table().get(id).run(conn, (err, result) => {
+    if(err){
+      console.log("ERROR getCustomer: ", err);
+      cb({code: 500, obj: {error: "DATABASE_ERROR"}});
+    } else {
+      if(result){
+        cb(null, result);
+      } else {
+        cb({code: 404, obj: {error: "CUSTOMER_NOT_FOUND"}});
+      }
+    }
+  });
 }
 
 var getAllCustomers = (cb) => {
-    cb(null, customers);
+  table().run(conn, (err, cursor) => {
+    if(err){
+      console.log("ERROR getAllCustomers: ", err);
+      cb({code: 500, obj: {error: "DATABASE_ERROR"}});
+    } else {
+      cursor.toArray((err, result) => {
+        if(err){
+          console.log("ERROR getAllCustomers:toArray: ", err);
+          cb({code: 500, obj: {error: "RESULT_ERROR"}});
+        } else {
+          result.sort((a,b) => {
+            if(a.lastContacted){
+              if(b.lastContacted){
+                return new Date(a.lastContacted).getTime() - new Date(b.lastContacted).getTime();
+              } else {
+                return -1;
+              }
+            } else {
+              return 1;
+            }
+          });
+          cb(null, result);
+        }
+      });
+    }
+  });
 }
 
 var fun = {

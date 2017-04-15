@@ -1,6 +1,10 @@
 import React, {ProtTypes} from 'react';
 import style from './style.css';
 var editImage = require('../img/edit.png');
+var contact = require('../img/contact.png');
+import $ from 'jquery';
+import { Row, Col } from 'react-flexbox-grid';
+
 // import axios from 'axios';
 // import Messageline from './messageline'
 //
@@ -17,6 +21,21 @@ export default class List extends React.Component {
     };
     this.parentEditContact = props.editContact;
   }
+  contacted(contact) {
+    var urlContacted = '/customer/contact/' + contact.id
+    $.ajax({
+      url: urlContacted,
+      type: 'PUT',
+      contentType: "application/json; charset=utf-8",
+      success: function(data) {
+        console.log('Contacted');
+      }.bind(this),
+      error: function(xhr, status, err) {
+        this.setState({error:'Error adding or changing customer'})
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  }
   editContact(contact) {
     this.parentEditContact(contact);
   }
@@ -31,13 +50,14 @@ export default class List extends React.Component {
   render() {
     const cust = this.state.customer
     return (
-      <div className={style.container}>
-          <div className={style.company+' '+style.listItem}>{cust.company}</div>
-          <div className={style.contact+' '+style.listItem}>{cust.contact}</div>
-          <div className={style.last+' '+style.listItem}>{cust.lastContact}</div>
-          <div className={style.days+' '+style.listItem}>{cust.days}</div>
-          <div className={style.edit+' '+style.listItem}><img onClick={this.editContact.bind(this,cust)} className={style.editImg} src={editImage}></img></div>
-      </div>
+      <Row className={style.row}>
+        <Col xs={6} md={1}><div className={style.imgContainer}><img onClick={this.contacted.bind(this,cust)} className={style.contactedImg} src={contact}></img></div></Col>
+        <Col xs={6} md={3}>{cust.company}</Col>
+        <Col xs={6} md={3}>{cust.contact}</Col>
+        <Col xs={6} md={3}>{cust.lastContacted}</Col>
+        <Col xs={6} md={1}>{cust.days}</Col>
+        <Col xs={6} md={1}><div className={style.imgContainer}><img onClick={this.editContact.bind(this,cust)} className={style.editImg} src={editImage}></img></div></Col>
+      </Row>
     );
   }
 }

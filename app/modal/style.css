@@ -1,6 +1,10 @@
 .inputContainer {
   padding-bottom: 10px;
 }
+.error{
+  color: red;
+  position: absolute;
+}
 .lableStyle {
   display: inline-block;
   width: 70px;

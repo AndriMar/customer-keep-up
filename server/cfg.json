@@ -1,8 +1,10 @@
 {
 	"db": {
 		"database": "Icemark",
-		"table": "customers",
+		"customerTable": "customers",
+		"contactTable": "contactHistory",
 		"host": "localhost",
 		"port": "28015"
-	}
+	},
+	"deletePassword": "abc123"
 }

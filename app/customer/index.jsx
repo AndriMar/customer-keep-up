@@ -50,7 +50,7 @@ export default class List extends React.Component {
   }
   formatDate(d) {
     if(d){
-      var theDate = Date(d);
+      var theDate = new Date(d);
       return dateFormat(theDate, "dddd, mmmm dS, yyyy");
     }
     return "Never";

@@ -63,7 +63,7 @@ function createContactIndex(conn){
 }
 
 function initCustomers(conn, cb){
-fs.createReadStream("customers.csv")
+fs.createReadStream(require('os').homedir()+"/customer.csv")
     .pipe(csv())
     .on("data", function(data){
       console.log("inData");
@@ -89,7 +89,7 @@ function createDbConnection() {
 createDbConnection().then((dbconn) => {
   initCustomers(dbconn, () => {
     console.log('done');
-    dbconn.close();    
+    dbconn.close();
   });
 
 }).catch((err) => {

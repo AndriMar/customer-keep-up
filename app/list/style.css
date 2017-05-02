@@ -9,3 +9,21 @@
   font-weight: bold;
   text-decoration: underline;
 }
+
+.search {
+  margin-left: 23px;
+  width: 130px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url(../img/searchicon.png);
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+}
+
+.search[type=text]:focus {
+    width: 50%;
+}

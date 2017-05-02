@@ -36,7 +36,7 @@ const config = {
  },
 
  plugins: [new HtmlWebpackPlugin({
-   title: 'My app',
+   title: 'Icemark',
    template: 'my-index.ejs'
  })]
 };

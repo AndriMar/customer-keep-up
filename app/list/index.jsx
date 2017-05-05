@@ -65,7 +65,7 @@ export default class List extends React.Component {
     })
     return (
       <div className={style.container}>
-        <input type="text" autocomplete='false' placeholder='Search...' className={style.search} value={this.state.filterText} name='company' onChange={this.editFilter}/>
+        <input type="text" autoComplete='false' placeholder='Search...' className={style.search} value={this.state.filterText} name='company' onChange={this.editFilter}/>
         <Grid fluid>
           <Row>
             <Col className={style.headder} xs={1} md={1} lg={1}>Contacted</Col>

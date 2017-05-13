@@ -27,6 +27,46 @@ var calculateDays = (data) => {
   });
 };
 
+let orderAlphabeticalWithinColor = (data) => {
+  
+  let colors = {
+    "red": [],
+    "yellow": [],
+    "green": [],
+    "never": []
+  };
+
+  let sortFun = (a, b) => {
+    if(a.company < b.company) {
+      return -1;
+    } else if (a.company > b.company) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
+  for(let i = 0; i < data.length; i++){
+    if(data[i].days === 0) {
+      colors.green.push(data[i]);
+    } else if (data[i].days === 1) {
+      colors.yellow.push(data[i]);
+    } else if (data[i].days === undefined) {
+      colors.never.push(data[i]);
+    } else {
+      colors.red.push(data[i]);
+    }
+  }
+
+  colors.green.sort(sortFun);
+  colors.yellow.sort(sortFun);
+  colors.red.sort(sortFun);
+  colors.never.sort(sortFun);
+
+  return colors.red.concat(colors.yellow, colors.green, colors.never);
+
+}
+
 var createContactMap = (data) => {
   //History is used so that multiple contacts per day for the same customer is not counted
   var history = [];
@@ -213,7 +253,9 @@ var getAllCustomers = (cb) => {
               return 1;
             }
           });
-          cb(null, calculateDays(result));
+          result = calculateDays(result);
+
+          cb(null, orderAlphabeticalWithinColor(result));
         }
       });
     }

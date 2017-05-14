@@ -1,0 +1,16 @@
+services:
+  server:
+    build: .
+    ports:
+      - "1337:1337"
+    links:
+      - "rethinkdb:rethinkdb"
+    environment:
+      - DELTEPASSWORD=abc123
+      - DBHOST=rethinkdb
+  rethinkdb:
+    image: "rethinkdb:2.3.5"
+    volumes:
+      - ./data:/data
+
+

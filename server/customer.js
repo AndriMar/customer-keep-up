@@ -1,6 +1,14 @@
 var dl = require("./lib/dataLayer.js");
 var cfg = require("./cfg.json");
 
+if(process.env.DBHOST){
+  cfg.db.host = process.env.DBHOST;
+}
+
+if(process.env.DELETEPASSWORD){
+  cfg.deletePassword = process.env.DELETEPASSWORD;
+}
+
 var getCustomer = (req, res) => {
   if(req.params && req.params.id){
     dl.getCustomer(req.params.id, (err, data) => {

@@ -4,6 +4,10 @@ var cfg = require("../cfg.json");
 var dl;
 var io;
 
+if(process.env.DBHOST){
+  cfg.db.host = process.env.DBHOST;
+}
+
 var customerTable = () => {
   return rt.db(cfg.db.database).table(cfg.db.customerTable);
 };

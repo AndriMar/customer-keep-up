@@ -1,0 +1,9 @@
+node_modules
+dist
+data
+server/migration
+.git
+.gitignore
+.eslintrc.js
+README.md
+yarn.lock

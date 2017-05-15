@@ -14,4 +14,6 @@ RUN cd /var/customer-keep-up && npm i && make build
 
 EXPOSE 1337
 
+WORKDIR /var/customer-keep-up
+
 ENTRYPOINT ["node", "server"]

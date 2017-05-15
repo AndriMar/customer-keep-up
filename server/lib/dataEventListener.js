@@ -16,45 +16,49 @@ var contactTable = () => {
   return rt.db(cfg.db.database).table(cfg.db.contactTable);
 };
 
-rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
-  if(err){console.log(err); process.exit(1);}
-  conn = connection;
-  //listen to customerTable
-  customerTable().changes().run(conn, (err, cursor) => {
+let connectDatabase = () => {
+  
+  rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
     if(err){
-      console.log("ERROR Listening to customerTable: ", err);
-    } else {
-      cursor.each((err, data) => {
-        dl.getAllCustomers((err, data) => {
-          if(err){
-            console.log("ERROR emit: ", err);
-          } else {
-            io.emit("customerList", data);
-          }
-        });
-      });
+      console.log(`Unable to connect to database - trying again in 10 seconds, error: ${err.message}`);
+      return setTimeout(connectDatabase, 10000);
     }
-  });
-
-  //listen to contactTable
-  contactTable().changes().run(conn, (err, cursor) => {
-    if(err){
-      console.log("ERROR Listening to contactTable: ", err);
-    } else {
-      cursor.each((err, data) => {
-        dl.getAllContactHistory((err, data) => {
-          if(err){
-            console.log("ERROR emit: ", err);
-          } else {
-            io.emit("contactHistory", data);
-          }
+    conn = connection;
+    //listen to customerTable
+    customerTable().changes().run(conn, (err, cursor) => {
+      if(err){
+        console.log("ERROR Listening to customerTable: ", err);
+      } else {
+        cursor.each((err, data) => {
+          dl.getAllCustomers((err, data) => {
+            if(err){
+              console.log("ERROR emit: ", err);
+            } else {
+              io.emit("customerList", data);
+            }
+          });
         });
-      });
-    }
+      }
+    });
+
+    //listen to contactTable
+    contactTable().changes().run(conn, (err, cursor) => {
+      if(err){
+        console.log("ERROR Listening to contactTable: ", err);
+      } else {
+        cursor.each((err, data) => {
+          dl.getAllContactHistory((err, data) => {
+            if(err){
+              console.log("ERROR emit: ", err);
+            } else {
+              io.emit("contactHistory", data);
+            }
+          });
+        });
+      }
+    });
   });
-
-
-});
+};
 
 module.exports = (server, dataLayer) => {
   dl = dataLayer;

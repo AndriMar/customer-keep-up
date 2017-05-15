@@ -3,11 +3,17 @@ var rt = require("rethinkdb");
 const SECINDAY = 8.64e7;
 var conn;
 
-rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
-  if(err){console.log(err); process.exit(1);}
-  console.log("Connected to Database");
-  conn = connection;
-});
+let connectDatabase = () => {
+  rt.connect({host: cfg.db.host, port: cfg.db.port}, (err, connection) => {
+    if(err){
+      console.log(`Unable to connect to database - trying again in 10 seconds, error: ${err.message}`);
+      return setTimeout(connectDatabase, 10000);
+    }
+    console.log("Connected to Database");
+    conn = connection;
+  });
+}
+
 
 var customerTable = () => {
   return rt.db(cfg.db.database).table(cfg.db.customerTable);

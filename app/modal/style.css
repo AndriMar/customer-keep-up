@@ -13,6 +13,7 @@
 }
 .inputStyle {
   width: 100%;
+  border: 1px solid gray;
 }
 .buttonStyle {
   border: none;

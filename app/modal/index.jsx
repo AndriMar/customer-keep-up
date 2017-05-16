@@ -10,7 +10,7 @@ const customStyles = {
   content : {
     top                   : '50%',
     left                  : '50%',
-    width                 : '300px',
+    width                 : '600px',
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
@@ -31,6 +31,7 @@ export default class List extends React.Component {
       this.closeModal = this.closeModal.bind(this);
 
       this.editCompany = this.editCompany.bind(this);
+      this.editInfo = this.editInfo.bind(this);
       this.editContact = this.editContact.bind(this);
       this.editPhone = this.editPhone.bind(this);
       this.editAddress = this.editAddress.bind(this);
@@ -91,6 +92,11 @@ export default class List extends React.Component {
       customer.address = event.target.value;
       this.setState({customer})
     }
+    editInfo(event) {
+      var customer = this.state.customer;
+      customer.info = event.target.value;
+      this.setState({customer})
+    }
     render() {
       var customer = this.state.customer;
       return (
@@ -121,6 +127,10 @@ export default class List extends React.Component {
               <div className={style.inputContainer}>
                 <lable className={style.lableStyle}>Address:</lable>
                 <input type='text' className={style.inputStyle} value={customer.address} name='address' onChange={this.editAddress}></input>
+              </div>
+              <div className={style.inputContainer}>
+                <lable className={style.lableStyle}>Info:</lable>
+                <textarea rows="4" cols="50" type='text' className={style.inputStyle} value={customer.info} name='info' onChange={this.editInfo}></textarea>
               </div>
               <button className={style.buttonStyle + ' '+ style.buttonSave}>Save</button>
               <button className={style.buttonStyle + ' '+ style.buttonCancel} onClick={this.closeModal}>Cancel</button>

@@ -36,16 +36,34 @@ export default class List extends React.Component {
       this.editPhone = this.editPhone.bind(this);
       this.editAddress = this.editAddress.bind(this);
       this.addUpdate = this.addUpdate.bind(this);
+      this.deleteCustomer = this.deleteCustomer.bind(this);
     }
     addUpdate(event) {
       event.preventDefault();
       var action = this.state.customer.id?'PUT':'POST';
-      console.log(this.state.customer,action)
       $.ajax({
         url: '/customer',
         type: action,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(this.state.customer),
+        success: function(data) {
+          this.closeModal();
+        }.bind(this),
+        error: function(xhr, status, err) {
+          this.setState({error:'Error adding or changing customer'})
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    }
+    deleteCustomer(event) {
+      event.preventDefault();
+      var action = 'DELETE';
+      var url = '/customer/' + this.state.customer.id;
+      $.ajax({
+        url: url,
+        type: action,
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function(xhr){xhr.setRequestHeader('token', 'abc123');},
         success: function(data) {
           this.closeModal();
         }.bind(this),
@@ -133,6 +151,7 @@ export default class List extends React.Component {
                 <textarea rows="4" cols="50" type='text' className={style.inputStyle} value={customer.info} name='info' onChange={this.editInfo}></textarea>
               </div>
               <button className={style.buttonStyle + ' '+ style.buttonSave}>Save</button>
+              {customer.id?(<button className={style.buttonStyle + ' '+ style.buttonDelete} onClick={this.deleteCustomer}>Delete</button>):null}
               <button className={style.buttonStyle + ' '+ style.buttonCancel} onClick={this.closeModal}>Cancel</button>
               <div className={style.error}>{this.state.error}</div>
             </form>
